@@ -1,10 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"os"
+
+	"github.com/ppiankov/aispectre/internal/commands"
 )
 
+// Set via ldflags at build time.
 var (
 	version = "dev"
 	commit  = "none"
@@ -12,10 +15,11 @@ var (
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "version" {
-		fmt.Printf("aispectre %s (commit: %s, built: %s)\n", version, commit, date)
-		return
+	if err := commands.Execute(version, commit, date); err != nil {
+		var exitErr *commands.ExitError
+		if errors.As(err, &exitErr) {
+			os.Exit(exitErr.Code)
+		}
+		os.Exit(1)
 	}
-	fmt.Println("aispectre — AI/LLM spend waste auditor")
-	os.Exit(0)
 }
