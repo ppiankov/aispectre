@@ -1,0 +1,41 @@
+{
+  "$schema": "spectre/v1",
+  "generated_at": "2025-02-01T00:00:00Z",
+  "target": {
+    "type": "ai-org",
+    "platform": "openai"
+  },
+  "summary": {
+    "total_findings": 2,
+    "estimated_monthly_waste": 80,
+    "by_severity": {
+      "high": 1,
+      "info": 0,
+      "low": 0,
+      "medium": 1
+    }
+  },
+  "findings": [
+    {
+      "kind": "KEY_UNUSED",
+      "severity": "high",
+      "platform": "openai",
+      "title": "Unused API key: old-key",
+      "description": "API key \"old-key\" has never been used",
+      "estimated_monthly_waste": 0
+    },
+    {
+      "kind": "DOWNGRADE_AVAILABLE",
+      "severity": "medium",
+      "platform": "openai",
+      "model": "gpt-4",
+      "title": "Cheaper alternative available for gpt-4",
+      "description": "Consider gpt-4o",
+      "estimated_monthly_waste": 80,
+      "evidence": {
+        "downgrade_to": "gpt-4o",
+        "savings": 80
+      }
+    }
+  ]
+}
