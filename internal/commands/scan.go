@@ -14,6 +14,7 @@ import (
 	"github.com/ppiankov/aispectre/internal/bedrock"
 	"github.com/ppiankov/aispectre/internal/cohere"
 	"github.com/ppiankov/aispectre/internal/config"
+	"github.com/ppiankov/aispectre/internal/groq"
 	"github.com/ppiankov/aispectre/internal/openai"
 	"github.com/ppiankov/aispectre/internal/report"
 	"github.com/ppiankov/aispectre/internal/vertexai"
@@ -21,7 +22,7 @@ import (
 
 var validPlatforms = map[string]bool{
 	"openai": true, "anthropic": true, "bedrock": true,
-	"azureopenai": true, "vertexai": true, "cohere": true,
+	"azureopenai": true, "vertexai": true, "cohere": true, "groq": true,
 }
 
 var scanFlags struct {
@@ -41,11 +42,11 @@ func newScanCmd() *cobra.Command {
 		Long: `Scan AI/LLM platform usage data to find idle API keys, underused models,
 and wasted compute. Reports estimated monthly waste for each finding.
 
-Supported platforms: openai, anthropic, bedrock, azureopenai, vertexai, cohere`,
+Supported platforms: openai, anthropic, bedrock, azureopenai, vertexai, cohere, groq`,
 		RunE: runScan,
 	}
 
-	cmd.Flags().StringVar(&scanFlags.platform, "platform", "", "platform to scan (openai, anthropic, bedrock, azureopenai, vertexai, cohere)")
+	cmd.Flags().StringVar(&scanFlags.platform, "platform", "", "platform to scan (openai, anthropic, bedrock, azureopenai, vertexai, cohere, groq)")
 	cmd.Flags().BoolVar(&scanFlags.all, "all", false, "scan all configured platforms")
 	cmd.Flags().IntVar(&scanFlags.window, "window", 30, "lookback window for usage data (days)")
 	cmd.Flags().IntVar(&scanFlags.idleDays, "idle-days", 7, "days of inactivity before flagging as idle")
@@ -201,6 +202,13 @@ func ensurePlatformConfig(cfg *config.Config, platform, token string) {
 		if token != "" {
 			cfg.Platforms.Cohere.Token = token
 		}
+	case "groq":
+		if cfg.Platforms.Groq == nil {
+			cfg.Platforms.Groq = &config.GroqConfig{Enabled: true}
+		}
+		if token != "" {
+			cfg.Platforms.Groq.Token = token
+		}
 	}
 }
 
@@ -218,6 +226,8 @@ func scanPlatform(ctx context.Context, cfg *config.Config, platform string, star
 		return scanVertexAI(ctx, cfg.Platforms.VertexAI, start, end)
 	case "cohere":
 		return scanCohere(ctx, cfg.Platforms.Cohere, start, end)
+	case "groq":
+		return scanGroq(ctx, cfg.Platforms.Groq, start, end)
 	default:
 		return scanResult{}, fmt.Errorf("unknown platform: %s", platform)
 	}
@@ -361,6 +371,26 @@ func scanCohere(_ context.Context, pcfg *config.CohereConfig, start, end time.Ti
 	_, err = client.FetchUsage(context.Background(), start, end)
 	if err != nil && errors.Is(err, cohere.ErrUnsupported) {
 		// Cohere has no usage API — not an error.
+		return scanResult{}, nil
+	}
+	if err != nil {
+		return scanResult{}, fmt.Errorf("fetch usage: %w", err)
+	}
+
+	return scanResult{}, nil
+}
+
+func scanGroq(_ context.Context, pcfg *config.GroqConfig, start, end time.Time) (scanResult, error) {
+	if pcfg == nil {
+		return scanResult{}, fmt.Errorf("groq not configured")
+	}
+	client, err := groq.NewClient(groq.Config{})
+	if err != nil {
+		return scanResult{}, err
+	}
+
+	_, err = client.FetchUsage(context.Background(), start, end)
+	if err != nil && errors.Is(err, groq.ErrUnsupported) {
 		return scanResult{}, nil
 	}
 	if err != nil {

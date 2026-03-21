@@ -69,7 +69,7 @@ aispectre scan --all
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--platform` | | Platform to scan (openai, anthropic, bedrock, azureopenai, vertexai, cohere) |
+| `--platform` | | Platform to scan (openai, anthropic, bedrock, azureopenai, vertexai, cohere, groq) |
 | `--all` | `false` | Scan all configured platforms |
 | `--window` | `30` | Lookback window in days |
 | `--idle-days` | `7` | Days of inactivity before flagging as idle |
@@ -121,6 +121,7 @@ Platform detection also works automatically from environment variables (`OPENAI_
 | Azure OpenAI | `AZURE_SUBSCRIPTION_ID` | Azure Monitor Metrics |
 | Vertex AI | `GOOGLE_CLOUD_PROJECT` | Cloud Monitoring |
 | Cohere | `COHERE_API_KEY` | Stub (no usage API available) |
+| Groq | `GROQ_API_KEY` | Stub (no usage API available) |
 
 ## Finding Types
 
@@ -163,7 +164,7 @@ Anthropic admin keys are only available on **Team or Enterprise** plans. Individ
 
 ## Known Limitations
 
-- **Cohere** has no public usage API — the client is a stub that returns gracefully
+- **Cohere** and **Groq** have no public usage API — clients are stubs that return gracefully
 - **SARIF** output format is stubbed (returns an error) — planned for a future release
 - **No prompt content** — by design. aispectre cannot tell you what your prompts say, only how many tokens they used
 - **No historical tracking** — each scan is a point-in-time snapshot against the lookback window

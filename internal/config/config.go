@@ -30,6 +30,7 @@ type PlatformConfigs struct {
 	AzureOpenAI *AzureOpenAIConfig `yaml:"azureopenai"`
 	VertexAI    *VertexAIConfig    `yaml:"vertexai"`
 	Cohere      *CohereConfig      `yaml:"cohere"`
+	Groq        *GroqConfig        `yaml:"groq"`
 }
 
 // OpenAIConfig holds OpenAI platform settings.
@@ -70,6 +71,12 @@ type VertexAIConfig struct {
 
 // CohereConfig holds Cohere platform settings.
 type CohereConfig struct {
+	Token   string `yaml:"token"`
+	Enabled bool   `yaml:"enabled"`
+}
+
+// GroqConfig holds Groq platform settings.
+type GroqConfig struct {
 	Token   string `yaml:"token"`
 	Enabled bool   `yaml:"enabled"`
 }
@@ -191,6 +198,12 @@ func detectPlatforms(cfg *Config, getenv func(string) string) {
 			cfg.Platforms.Cohere = &CohereConfig{Token: token, Enabled: true}
 		}
 	}
+
+	if cfg.Platforms.Groq == nil {
+		if token := getenv("GROQ_API_KEY"); token != "" {
+			cfg.Platforms.Groq = &GroqConfig{Token: token, Enabled: true}
+		}
+	}
 }
 
 // EnabledPlatforms returns a sorted list of platform names that are configured and enabled.
@@ -213,6 +226,9 @@ func (c *Config) EnabledPlatforms() []string {
 	}
 	if c.Platforms.Cohere != nil && c.Platforms.Cohere.Enabled {
 		platforms = append(platforms, "cohere")
+	}
+	if c.Platforms.Groq != nil && c.Platforms.Groq.Enabled {
+		platforms = append(platforms, "groq")
 	}
 	sort.Strings(platforms)
 	return platforms
