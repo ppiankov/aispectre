@@ -116,7 +116,7 @@ Platform detection also works automatically from environment variables (`OPENAI_
 | Platform | Auth | Data Source |
 |----------|------|-------------|
 | OpenAI | `OPENAI_API_KEY` (admin key) | Organization Usage + Costs API |
-| Anthropic | `ANTHROPIC_API_KEY` | Usage Report API |
+| Anthropic | `ANTHROPIC_API_KEY` (admin key) | Usage Report API |
 | AWS Bedrock | `AWS_PROFILE` / IAM | CloudWatch Metrics |
 | Azure OpenAI | `AZURE_SUBSCRIPTION_ID` | Azure Monitor Metrics |
 | Vertex AI | `GOOGLE_CLOUD_PROJECT` | Cloud Monitoring |
@@ -150,9 +150,14 @@ aispectre scan --platform openai
                                       vertexai, cohere     types
 ```
 
-### OpenAI: admin key required
+### Admin keys required (OpenAI + Anthropic)
 
-OpenAI's usage and cost endpoints are organization-level admin APIs. A regular project API key (even with "All" permissions) will return 403. You need an **admin key** created from **Settings > Organization > Admin keys** in the OpenAI dashboard. Admin keys start with `sk-admin-`.
+Both OpenAI and Anthropic usage endpoints are organization-level admin APIs. Regular API keys will return 401/403.
+
+| Platform | Regular key prefix | Admin key prefix | Where to create |
+|----------|-------------------|------------------|-----------------|
+| OpenAI | `sk-proj-` | `sk-admin-` | Settings > Organization > Admin keys |
+| Anthropic | `sk-ant-api03-` | `sk-ant-admin-` | Console > Organization > Admin settings |
 
 ## Known Limitations
 
