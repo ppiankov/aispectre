@@ -115,7 +115,7 @@ Platform detection also works automatically from environment variables (`OPENAI_
 
 | Platform | Auth | Data Source |
 |----------|------|-------------|
-| OpenAI | `OPENAI_API_KEY` | Organization Usage + Costs API |
+| OpenAI | `OPENAI_API_KEY` (admin key) | Organization Usage + Costs API |
 | Anthropic | `ANTHROPIC_API_KEY` | Usage Report API |
 | AWS Bedrock | `AWS_PROFILE` / IAM | CloudWatch Metrics |
 | Azure OpenAI | `AZURE_SUBSCRIPTION_ID` | Azure Monitor Metrics |
@@ -149,6 +149,10 @@ aispectre scan --platform openai
                     + env detection   bedrock, azure,      8 finding        spectrehub
                                       vertexai, cohere     types
 ```
+
+### OpenAI: admin key required
+
+OpenAI's usage and cost endpoints are organization-level admin APIs. A regular project API key (even with "All" permissions) will return 403. You need an **admin key** created from **Settings > Organization > Admin keys** in the OpenAI dashboard. Admin keys start with `sk-admin-`.
 
 ## Known Limitations
 

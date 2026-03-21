@@ -15,7 +15,7 @@ func (c *Client) FetchCosts(ctx context.Context, startTime, endTime time.Time) (
 	query := url.Values{
 		"start_time":   {strconv.FormatInt(startTime.Unix(), 10)},
 		"bucket_width": {"1d"},
-		"limit":        {strconv.Itoa(maxPageSize)},
+		"limit":        {strconv.Itoa(maxDailyBuckets)},
 	}
 	if !endTime.IsZero() {
 		query.Set("end_time", strconv.FormatInt(endTime.Unix(), 10))
@@ -44,7 +44,7 @@ func (c *Client) FetchCompletionUsage(ctx context.Context, startTime, endTime ti
 		"start_time":   {strconv.FormatInt(startTime.Unix(), 10)},
 		"bucket_width": {"1d"},
 		"group_by[]":   {"model"},
-		"limit":        {strconv.Itoa(maxPageSize)},
+		"limit":        {strconv.Itoa(maxDailyBuckets)},
 	}
 	if !endTime.IsZero() {
 		query.Set("end_time", strconv.FormatInt(endTime.Unix(), 10))

@@ -17,6 +17,7 @@ const (
 	defaultTimeout     = 30 * time.Second
 	defaultRateLimitMS = 250
 	maxPageSize        = 100
+	maxDailyBuckets    = 31
 )
 
 // Client wraps OpenAI Admin API calls for usage and cost data.
