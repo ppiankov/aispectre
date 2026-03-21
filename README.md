@@ -162,6 +162,33 @@ Both OpenAI and Anthropic usage endpoints are organization-level admin APIs. Reg
 
 Anthropic admin keys are only available on **Team or Enterprise** plans. Individual orgs do not have the Admin keys tab — the usage API is not accessible for individual accounts.
 
+### Azure OpenAI: CLI auth required
+
+Azure OpenAI uses `DefaultAzureCredential` which tries multiple auth methods in order. The simplest for local use:
+
+```sh
+brew install azure-cli
+az login
+```
+
+Set these env vars (or use `.aispectre.yaml`):
+
+```sh
+export AZURE_SUBSCRIPTION_ID=your-subscription-id
+export AZURE_RESOURCE_GROUP=your-resource-group
+export AZURE_OPENAI_ACCOUNT=your-account-name   # e.g. "oracul-openai" from the endpoint URL
+```
+
+### Vertex AI: GCP auth required
+
+Vertex AI uses Application Default Credentials:
+
+```sh
+brew install google-cloud-sdk
+gcloud auth application-default login
+export GOOGLE_CLOUD_PROJECT=your-project-id
+```
+
 ## Known Limitations
 
 - **Cohere** and **Groq** have no public usage API — clients are stubs that return gracefully
