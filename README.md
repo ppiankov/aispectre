@@ -157,7 +157,9 @@ Both OpenAI and Anthropic usage endpoints are organization-level admin APIs. Reg
 | Platform | Regular key prefix | Admin key prefix | Where to create |
 |----------|-------------------|------------------|-----------------|
 | OpenAI | `sk-proj-` | `sk-admin-` | Settings > Organization > Admin keys |
-| Anthropic | `sk-ant-api03-` | `sk-ant-admin-` | Console > Organization > Admin settings |
+| Anthropic | `sk-ant-api03-` | `sk-ant-admin-` | Console > Manage > API keys > Admin keys tab |
+
+Anthropic admin keys are only available on **Team or Enterprise** plans. Individual orgs do not have the Admin keys tab — the usage API is not accessible for individual accounts.
 
 ## Known Limitations
 
