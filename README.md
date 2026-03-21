@@ -176,7 +176,7 @@ Set these env vars (or use `.aispectre.yaml`):
 ```sh
 export AZURE_SUBSCRIPTION_ID=your-subscription-id
 export AZURE_RESOURCE_GROUP=your-resource-group
-export AZURE_OPENAI_ACCOUNT=your-account-name   # e.g. "oracul-openai" from the endpoint URL
+export AZURE_OPENAI_ACCOUNT=your-account-name   # first part of your endpoint URL
 ```
 
 ### Vertex AI: GCP auth required
